@@ -2,7 +2,7 @@ import { Heading, Text, Button } from "@system-ignite-ui/react";
 import { Container, Hero, Preview } from "./styles";
 import Image from "next/image";
 import ImageCalendar from "../../assets/calendar.png";
-
+import {ArrowRight} from 'phosphor-react'
 export default function Home() {
   return (
     <Container>
@@ -12,7 +12,7 @@ export default function Home() {
           Conecte seu calendário e permita que as pessoas marquem agendamentos
           no seu tempo livre.
         </Text>
-        <Button>Criar conta com Google</Button>
+        <Button>Reservar <ArrowRight /></Button>
       </Hero>
       <Preview>
         <Image

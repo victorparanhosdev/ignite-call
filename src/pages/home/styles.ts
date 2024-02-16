@@ -1,4 +1,4 @@
-import { styled, Heading, Text } from "@system-ignite-ui/react";
+import { styled, Heading, Text, Button } from "@system-ignite-ui/react";
 
 export const Container = styled('div', {
     maxWidth: 'calc(100vw - (100vw - 1160px) / 2)',
@@ -13,16 +13,17 @@ export const Container = styled('div', {
     maxWidth: 480,
     padding: '0 $10',
   
-    [`${Heading}`]: {
+    [`> ${Heading}`]: {
       '@media(max-width: 600px)': {
         fontSize: '$6xl',
       },
     },
   
-    [`${Text}`]: {
+    [`> ${Text}`]: {
       maskType: '$2',
       color: '$gray200',
     },
+   
   })
   
   export const Preview = styled('div', {
