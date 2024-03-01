@@ -69,7 +69,7 @@ export default function TimeIntervals() {
 
       <IntervalBox as="form" onSubmit={handleSubmit(handleSetTimeIntervals)}>
         <IntervalContainer>
-          {fields.map(field => {
+          {fields.map((field, index) => {
               return (
                 <IntervalItem key={field.id}>
                 <IntervalDay>
@@ -77,8 +77,8 @@ export default function TimeIntervals() {
                   <Text>{weekDays[field.weekDay]}</Text>
                 </IntervalDay>
                 <IntervalInputs>
-                  <TextInput containerProps={{size:"sm"}} type="time" step={60} />
-                  <TextInput containerProps={{size:"sm"}} type="time" step={60} />
+                  <TextInput containerProps={{size:"sm"}} type="time" step={60} {...register(`intervals.${index}.startTime`)}/>
+                  <TextInput containerProps={{size:"sm"}} type="time" step={60} {...register(`intervals.${index}.endTime`)}/>
                 </IntervalInputs>
               </IntervalItem>
               )
