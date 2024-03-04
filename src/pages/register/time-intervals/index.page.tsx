@@ -22,6 +22,8 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getWeekDays } from '@/src/utils/get-week-days'
+import { convertTimeStringToMinutes } from '@/src/utils/convert-time-string-to-minutes'
+import { api } from '@/src/lib/axios'
 
 const timeIntervalsFormSchema = z.object({
     intervals: z.array(z.object({
@@ -29,14 +31,29 @@ const timeIntervalsFormSchema = z.object({
       enabled: z.boolean(),
       startTime: z.string(),
       endTime: z.string(),
-    })).length(7).transform(intervals => intervals.filter(interval => interval.enabled)).refine(intervals => intervals.length > 0, {message: 'Você precisa selecionar pelo menos um dia da semana'})
+    })).length(7)
+    .transform(intervals => intervals.filter(interval => interval.enabled))
+    .refine(intervals => intervals.length > 0, {message: 'Você precisa selecionar pelo menos um dia da semana'})
+    .transform(intervals => {
+      return intervals.map(interval => {
+        return {
+          weekDay: interval.weekDay,
+          startTimeInMinutes: convertTimeStringToMinutes(interval.startTime),
+          endTimeInMinutes: convertTimeStringToMinutes(interval.endTime)
+        }
+      })
+    })
+    .refine(intervals => {
+      return intervals.every(interval => interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes)
+    }, {message: 'O horario de termino deve ser pelo menos 1h distante do inicio'})
 })
 
-type timeIntervalFormProps = z.infer<typeof timeIntervalsFormSchema>
+type TimeIntervalsFormInput = z.input<typeof timeIntervalsFormSchema>
+type TimeIntervalsFormOutput = z.output<typeof timeIntervalsFormSchema>
 
 export default function TimeIntervals() {
 
-  const {handleSubmit, register, control, watch, formState: {errors, isSubmitting}} = useForm({
+  const {handleSubmit, register, control, watch, formState: {errors, isSubmitting}} = useForm<TimeIntervalsFormInput>({
     resolver: zodResolver(timeIntervalsFormSchema),
     defaultValues: {
       intervals: [
@@ -59,8 +76,11 @@ export default function TimeIntervals() {
   const weekDays = getWeekDays()
   const intervals = watch('intervals')
 
-  async function handleSetTimeIntervals(data: timeIntervalFormProps) {
-    console.log(data)
+  async function handleSetTimeIntervals(data: any) {
+    const {intervals} = data as TimeIntervalsFormOutput
+    await api.post('/users/time-intervals', {
+      intervals,
+    })
   }
   
   return (
