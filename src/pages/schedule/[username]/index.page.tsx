@@ -20,7 +20,7 @@ export default function Schedule({ user }: ScheduleProps) {
         <Heading>{user.name}</Heading>
         <Text>{user.bio}</Text>
       </UserHeader>
-      <ScheduleForm></ScheduleForm>
+      <ScheduleForm />
     </Container>
   )
 }
