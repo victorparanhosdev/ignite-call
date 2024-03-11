@@ -5,7 +5,8 @@ CREATE TABLE "users" (
     "name" TEXT NOT NULL,
     "email" TEXT,
     "avatar_url" TEXT,
-    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "bio" TEXT
 );
 
 -- CreateTable
