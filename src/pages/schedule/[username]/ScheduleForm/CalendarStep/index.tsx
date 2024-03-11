@@ -1,9 +1,9 @@
 import { Calendar } from "@/src/components/Calendar";
 import { Container, TimePickerHeader, TimePicker, TimePickerItem, TimePickerList } from "./styles";
-
 export function CalendarStep(){
 
-    const isDateSelected = true
+    const isDateSelected = false
+
 
 
     return (
