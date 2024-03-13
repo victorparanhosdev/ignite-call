@@ -17,12 +17,14 @@ const confirmFormSchema = z.object({
   
   type ConfirmFormData = z.infer<typeof confirmFormSchema>
 
+
   interface ConfirmStepProps {
     schedulingDate: Date
     onCancelConfirmation: () => void
   }
+
   
- export function ConfirmStep() {
+ export function ConfirmStep({schedulingDate, onCancelConfirmation}: ConfirmStepProps) {
     const {
       register,
       handleSubmit,
@@ -35,11 +37,21 @@ const confirmFormSchema = z.object({
     const username = String(router.query.username)
   
     async function handleConfirmScheduling(data: ConfirmFormData) {
-      console.log(data)
+
+      const {name, email, observations} = data
+
+      await api.post(`/users/${username}/schedule`, {
+        name,
+        email,
+        observations,
+        date: schedulingDate
+      })
+
+      onCancelConfirmation()
     }
-  
-    //const describedDate = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY')
-    //const describedTime = dayjs(schedulingDate).format('HH:mm[h]')
+
+    const describedDate = dayjs(schedulingDate).format('DD[ de ]MMMM[ de ]YYYY')
+    const describedTime = dayjs(schedulingDate).format('HH:mm[h]')
   
   
     return (
@@ -47,11 +59,11 @@ const confirmFormSchema = z.object({
         <FormHeader>
           <Text>
             <CalendarBlank />
-            22 de Setembro de 2022
+            {describedDate}
           </Text>
           <Text>
             <Clock />
-            18:00h
+            {describedTime}
           </Text>
         </FormHeader>
   
@@ -75,11 +87,10 @@ const confirmFormSchema = z.object({
   
         <label>
         <TextArea {...register('observations')} />
-          <TextArea />
         </label>
   
         <FormActions>
-          <Button type="button" variant="tertiary">
+          <Button type="button" variant="tertiary" onClick={onCancelConfirmation}>
             Cancelar
           </Button>
           <Button type="submit" disabled={isSubmitting}>
