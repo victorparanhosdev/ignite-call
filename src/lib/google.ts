@@ -18,8 +18,9 @@ export async function getGoogleOAuthToken(userId: string){
     auth.setCredentials({
         access_token: account?.access_token,
         refresh_token: account?.refresh_token,
-        expiry_date: account?.expires_at
+        expiry_date: account?.expires_at ? account?.expires_at * 1000 : null
     })
+
     if(!account?.expires_at) {
         return auth
     }
@@ -43,13 +44,20 @@ export async function getGoogleOAuthToken(userId: string){
                 token_type
             },
         })
+
+        auth.setCredentials({
+            access_token,
+            refresh_token,
+            expiry_date,
+        })
+    
+        
     }
+
+    return auth
 
 
    
 
-    auth.setCredentials({
-
-    })
 
 }

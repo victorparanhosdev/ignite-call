@@ -5,6 +5,7 @@ import { Container, Header } from '../styles'
 import { AuthError, ConnectBox, ConnectItem } from './styles'
 import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { NextSeo } from 'next-seo'
 
 export default function Register() {
   const session = useSession()
@@ -21,6 +22,10 @@ export default function Register() {
   }
   
   return (
+
+    <>
+    <NextSeo title="Conecte sua agenda do Google | Ignite Call" noindex/>
+
     <Container>
       <Header>
         <Heading as="strong">Conecte sua agenda!</Heading>
@@ -64,5 +69,6 @@ export default function Register() {
         </Button>
       </ConnectBox>
     </Container>
+    </>
   )
 }

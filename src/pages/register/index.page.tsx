@@ -9,6 +9,8 @@ import { useEffect } from 'react'
 import router, { useRouter } from 'next/router'
 import { api } from '@/src/lib/axios'
 import { AxiosError } from 'axios'
+import { NextSeo } from 'next-seo'
+
 
 
 
@@ -63,6 +65,10 @@ export default function Register() {
     }, [query?.username, setValue])
 
     return (
+      
+        <>
+         <NextSeo title="Crie uma conta | Ignite Call" />
+      
         <Container>
             <Header>
                 <Heading as="strong">Bem-vindo ao Ignite Call!</Heading>
@@ -103,5 +109,8 @@ export default function Register() {
                 </Button>
             </Form>
         </Container>
+        </>
+
+    
     )
 }
