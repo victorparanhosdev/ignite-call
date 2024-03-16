@@ -1,4 +1,3 @@
-
 import { Heading, styled, Text } from '@system-ignite-ui/react'
 
 export const Container = styled('div', {

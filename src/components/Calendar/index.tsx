@@ -14,8 +14,6 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '@/src/lib/axios'
 import { useRouter } from 'next/router'
 
-
-
 interface CalendarWeek {
   week: number
   days: Array<{
@@ -33,53 +31,52 @@ interface BlockedDates {
 
 interface CalendarProps {
   selectedDate?: Date | null
-  onDateSelected: (date: Date)=> void
+  onDateSelected: (date: Date) => void
 }
 
-export function Calendar({selectedDate, onDateSelected}: CalendarProps) {
-  const [currentDate, setCurrentDate] = useState(()=> {
+export function Calendar({ onDateSelected }: CalendarProps) {
+  const [currentDate, setCurrentDate] = useState(() => {
     return dayjs().set('date', 1)
   })
 
-
   const router = useRouter()
 
-  function handlePreviousMonth(){
+  function handlePreviousMonth() {
     const previousMonthDate = currentDate.subtract(1, 'month')
     setCurrentDate(previousMonthDate)
   }
 
-  function handleNextMonth(){
+  function handleNextMonth() {
     const previousMonthDate = currentDate.add(1, 'month')
     setCurrentDate(previousMonthDate)
   }
 
-
-  const shortWeekDays = getWeekDays({short: true})
+  const shortWeekDays = getWeekDays({ short: true })
   const currentMonth = currentDate.format('MMMM')
   const currentYear = currentDate.format('YYYY')
 
   const username = String(router.query.username)
 
-
   const { data: blockedDates } = useQuery<BlockedDates>({
-    queryKey: ['blocked-dates', currentDate.get('year'), currentDate.get('month')],
+    queryKey: [
+      'blocked-dates',
+      currentDate.get('year'),
+      currentDate.get('month'),
+    ],
     queryFn: async () => {
       const response = await api.get(`/users/${username}/blocked-dates`, {
         params: {
-         year: currentDate.get('year'),
-         month: currentDate.get('month') + 1
+          year: currentDate.get('year'),
+          month: currentDate.get('month') + 1,
         },
       })
 
       return response.data
     },
-
   })
-  
 
   const calendarWeeks = useMemo(() => {
-    if(!blockedDates) {
+    if (!blockedDates) {
       return []
     }
     const daysInMonthArray = Array.from({
@@ -117,7 +114,10 @@ export function Calendar({selectedDate, onDateSelected}: CalendarProps) {
       ...daysInMonthArray.map((date) => {
         return {
           date,
-          disabled: date.endOf('day').isBefore(new Date()) || blockedDates.blockedWeekDays.includes(date.get('day')) || blockedDates.blockedDates.includes(date.get('date'))
+          disabled:
+            date.endOf('day').isBefore(new Date()) ||
+            blockedDates.blockedWeekDays.includes(date.get('day')) ||
+            blockedDates.blockedDates.includes(date.get('date')),
         }
       }),
       ...nextMonthFillArray.map((date) => {
@@ -154,10 +154,10 @@ export function Calendar({selectedDate, onDateSelected}: CalendarProps) {
         </CalendarTitle>
 
         <CalendarActions>
-          <button title='Previous Month' onClick={handlePreviousMonth}>
+          <button title="Previous Month" onClick={handlePreviousMonth}>
             <CaretLeft />
           </button>
-          <button title='Next Month' onClick={handleNextMonth}>
+          <button title="Next Month" onClick={handleNextMonth}>
             <CaretRight />
           </button>
         </CalendarActions>
@@ -172,13 +172,16 @@ export function Calendar({selectedDate, onDateSelected}: CalendarProps) {
           </tr>
         </thead>
         <tbody>
-        {calendarWeeks.map(({ week, days }) => {
+          {calendarWeeks.map(({ week, days }) => {
             return (
               <tr key={week}>
                 {days.map(({ date, disabled }) => {
                   return (
                     <td key={date.toString()}>
-                      <CalendarDay onClick={()=> onDateSelected(date.toDate())} disabled={disabled}>
+                      <CalendarDay
+                        onClick={() => onDateSelected(date.toDate())}
+                        disabled={disabled}
+                      >
                         {date.get('date')}
                       </CalendarDay>
                     </td>

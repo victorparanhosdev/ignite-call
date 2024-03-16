@@ -2,11 +2,14 @@ import { Adapter } from 'next-auth/adapters'
 import { prisma } from '../prisma'
 import { NextApiRequest, NextApiResponse, NextPageContext } from 'next'
 import { destroyCookie, parseCookies } from 'nookies'
-export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res: NextApiResponse | NextPageContext['res']): Adapter {
+export function PrismaAdapter(
+  req: NextApiRequest | NextPageContext['req'],
+  res: NextApiResponse | NextPageContext['res'],
+): Adapter {
   return {
     async createUser(user) {
-      const {'@ignite-call:userID': userIdOnCookies } = parseCookies({req})
-      if(!userIdOnCookies){
+      const { '@ignite-call:userID': userIdOnCookies } = parseCookies({ req })
+      if (!userIdOnCookies) {
         throw new Error('User ID not found on cookies.')
       }
 
@@ -41,9 +44,9 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
         },
       })
 
-     if(!user){
-      return null
-     }
+      if (!user) {
+        return null
+      }
 
       return {
         id: user.id,
@@ -61,7 +64,7 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
         },
       })
 
-      if(!user){
+      if (!user) {
         return null
       }
 
@@ -77,20 +80,20 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
     async getUserByAccount({ providerAccountId, provider }) {
       const account = await prisma.account.findUnique({
         where: {
-         provider_provider_account_id: {
-          provider,
-          provider_account_id: providerAccountId
-         }
+          provider_provider_account_id: {
+            provider,
+            provider_account_id: providerAccountId,
+          },
         },
-        include:{
-          user: true
-        }
+        include: {
+          user: true,
+        },
       })
 
-      if(!account){
+      if (!account) {
         return null
       }
-      const {user} = account
+      const { user } = account
 
       return {
         id: user.id,
@@ -120,7 +123,6 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
         emailVerified: null,
         avatar_url: prismaUser.avatar_url!,
       }
-
     },
     async linkAccount(account) {
       await prisma.account.create({
@@ -145,13 +147,13 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
           user_id: userId,
           expires,
           session_token: sessionToken,
-        }
+        },
       })
 
       return {
         userId,
         sessionToken,
-        expires
+        expires,
       }
     },
     async getSessionAndUser(sessionToken) {
@@ -162,20 +164,18 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
         include: {
           user: true,
         },
-        
       })
 
-      if(!prismaSession) {
+      if (!prismaSession) {
         return null
       }
-      
+
       const { user, ...session } = prismaSession
       return {
         session: {
           userId: session.user_id,
           expires: session.expires,
-          sessionToken: session.session_token
-
+          sessionToken: session.session_token,
         },
         user: {
           id: user.id,
@@ -184,24 +184,23 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
           email: user.email!,
           emailVerified: null,
           avatar_url: user.avatar_url!,
-        }
+        },
       }
-
     },
-    async updateSession({ sessionToken,userId, expires }) {
+    async updateSession({ sessionToken, userId, expires }) {
       const prismaSession = await prisma.session.update({
         where: {
-          session_token: sessionToken
+          session_token: sessionToken,
         },
         data: {
           expires,
-          user_id: userId
+          user_id: userId,
         },
       })
       return {
         sessionToken,
         userId: prismaSession.user_id,
-        expires: prismaSession.expires
+        expires: prismaSession.expires,
       }
     },
     async deleteSession(sessionToken) {
@@ -209,8 +208,7 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
         where: {
           session_token: sessionToken,
         },
-    })
-
-    }
-}
+      })
+    },
+  }
 }

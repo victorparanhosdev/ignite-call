@@ -16,15 +16,15 @@ interface ScheduleProps {
 export default function Schedule({ user }: ScheduleProps) {
   return (
     <>
-    <NextSeo title={`Agendar com ${user.name} | Ignite Call`} noindex/>
-    <Container>
-      <UserHeader>
-        <Avatar src={user.avatarUrl} />
-        <Heading>{user.name}</Heading>
-        <Text>{user.bio}</Text>
-      </UserHeader>
-      <ScheduleForm />
-    </Container>
+      <NextSeo title={`Agendar com ${user.name} | Ignite Call`} noindex />
+      <Container>
+        <UserHeader>
+          <Avatar src={user.avatarUrl} />
+          <Heading>{user.name}</Heading>
+          <Text>{user.bio}</Text>
+        </UserHeader>
+        <ScheduleForm />
+      </Container>
     </>
   )
 }

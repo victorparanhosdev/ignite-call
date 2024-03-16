@@ -33,7 +33,7 @@ export default async function handler(
       id: session.user.id,
     },
     data: {
-      bio
+      bio,
     },
   })
 
