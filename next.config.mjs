@@ -5,6 +5,7 @@ const nextConfig = {
   images: {
     domains: ['https://lh3.googleusercontent.com/'],
     },
+    
   
 };
 
